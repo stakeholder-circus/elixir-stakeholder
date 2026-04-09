@@ -1,37 +1,31 @@
 {
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
-    flake-utils.url = "github:numtide/flake-utils";
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
+  description = "stakeholder-circus elixir-stakeholder local full rewrite tranche";
 
-  outputs = {
-    self,
-    nixpkgs,
-    fenix,
-    flake-utils,
-  }:
-    flake-utils.lib.eachDefaultSystem (
-      system: let
-        pkgs = nixpkgs.legacyPackages.${system};
-        fenix_pkgs = fenix.packages.${system};
-      in {
-        nixpkgs.overlays = [fenix.overlays.default];
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = [pkgs.pkg-config pkgs.opencv];
-          packages = [
-            (
-              fenix_pkgs.fromToolchainFile {
-                file = ./rust-toolchain.toml;
-                sha256 = "sha256-AJ6LX/Q/Er9kS15bn9iflkUwcgYqRQxiOIL2ToVAXaU=";
-              }
-            )
-            pkgs.rust-analyzer
-          ];
-        };
-      }
-    );
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+  outputs = { self, nixpkgs }:
+    let
+      systems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      forAllSystems = nixpkgs.lib.genAttrs systems;
+    in {
+      devShells = forAllSystems (system:
+        let pkgs = import nixpkgs { inherit system; };
+        in {
+          default = pkgs.mkShell {
+            packages = with pkgs; [ git jq python312 elixir erlang rebar3 ];
+          };
+        });
+      apps = forAllSystems (system:
+        let pkgs = import nixpkgs { inherit system; };
+            mk = name: text: {
+              type = "app";
+              program = "${pkgs.writeShellScript name text}";
+            };
+        in {
+          build = mk "build" ''mix local.hex --force >/dev/null && mix local.rebar --force >/dev/null && mix deps.get && mix compile'';
+          test = mk "test" ''mix local.hex --force >/dev/null && mix local.rebar --force >/dev/null && mix deps.get && mix test'';
+          check = mk "check" ''mix local.hex --force >/dev/null && mix local.rebar --force >/dev/null && mix deps.get && mix format --check-formatted && mix credo --strict && mix test'';
+          format = mk "format" ''mix format'';
+        });
+    };
 }

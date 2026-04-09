@@ -1,11 +1,13 @@
-FROM rust:1-bookworm AS build
-WORKDIR /workspace
-COPY Cargo.toml Cargo.lock ./
-COPY src ./src
-RUN cargo test && cargo build --release
-
-FROM debian:bookworm-slim
+FROM elixir:1.19.4-otp-28 AS build
 WORKDIR /app
-COPY --from=build /workspace/target/release/rust-stakeholder /usr/local/bin/rust-stakeholder
-ENTRYPOINT ["rust-stakeholder"]
-CMD ["--list-values"]
+RUN mix local.hex --force && mix local.rebar --force
+COPY mix.exs mix.lock .formatter.exs ./
+RUN mix deps.get
+COPY lib ./lib
+COPY test ./test
+RUN mix format --check-formatted && mix credo --strict && mix test && mix escript.build
+
+FROM elixir:1.19.4-otp-28
+WORKDIR /app
+COPY --from=build /app/elixir-stakeholder /usr/local/bin/elixir-stakeholder
+ENTRYPOINT ["elixir-stakeholder"]
