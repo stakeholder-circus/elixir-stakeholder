@@ -2,7 +2,7 @@
 
 ## Role
 
-Actor-pipeline deterministic full rewrite tranche.
+Actor-pipeline deterministic full rewrite tranche that is validated locally and held for publication.
 
 ## Parity class
 

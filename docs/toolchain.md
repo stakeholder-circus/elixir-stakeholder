@@ -20,4 +20,4 @@
 - Homebrew / local runtime: `elixir`, `erlang`
 - Hex ecosystem: `jason`, `credo`
 - Docker gate: `elixir:1.19.4-otp-28`
-- Nix: `flake.nix` is present, but `flake.lock` is still pending until `nix` is installed locally
+- Nix: `flake.nix` and `flake.lock` for reproducible shell/app entry points

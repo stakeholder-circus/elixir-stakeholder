@@ -1,8 +1,8 @@
 # elixir-stakeholder Status
 
-Last updated: 2026-04-09 21:31 CEST
+Last updated: 2026-04-13 CEST
 
-- Role: `local-full-rewrite`
+- Role: `validated-wider-matrix`
 - Parity class: `full-parity`
 - Phase target: `native-and-docker-validated-wider-matrix`
 - Phase state: `complete`
@@ -17,10 +17,10 @@ Last updated: 2026-04-09 21:31 CEST
 
 ## Blockers
 - Publication remains intentionally blocked until at least `10` new full rewrites with tests are complete.
-- `flake.lock` generation is pending until `nix` is available locally.
+- `flake.lock` is now generated through the installed Nix toolchain.
 
 ## Next
-- Keep the repo local-only until the publication threshold is met.
+- Keep the repo publication-held until the publication threshold is met.
 - Preserve grouped fallback for post-modern-core families until a later tranche explicitly promotes them.
 
 ## Canonical references

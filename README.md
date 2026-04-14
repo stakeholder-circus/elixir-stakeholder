@@ -5,7 +5,7 @@
 Elixir wider-matrix rewrite under `stakeholder-circus`.
 
 ## Status
-- Local full rewrite tranche for `classic-six + modern-core`.
+- Validated wider-matrix repo held for publication.
 - Imported Rust history is preserved for attribution and auditability.
 - Governance, provenance, hook, and CI baselines remain in place.
 - Publication remains blocked until at least `10` new full rewrites with tests are complete.
